@@ -2,7 +2,7 @@
  * Copyright (C) 2008-2015  Jay Freeman (saurik)
 */
 
-(function(exports) {
+(function(ms) {
 
 let GetLibraryPath = function() {
     let handle = dlopen(NULL, RTLD_NOLOAD);
@@ -52,10 +52,10 @@ extern "C" void MSHookMessageEx(Class, SEL, void *, void **);
 
 var slice = Array.prototype.slice;
 
-getImageByName = MSGetImageByName;
-findSymbol = MSFindSymbol;
+ms.GetImageByName = MSGetImageByName;
+ms.FindSymbol = MSFindSymbol;
 
-HookFunction = function(func, hook, old) {
+ms.HookFunction = function(func, hook, old) {
     var type = typeid(func);
 
     var pointer;
@@ -69,7 +69,7 @@ HookFunction = function(func, hook, old) {
     MSHookFunction(func.valueOf(), type(hook), pointer);
 };
 
-HookMessage = function(isa, sel, imp, old) {
+ms.HookMessage = function(isa, sel, imp, old) {
     var type = sel.type(isa);
 
     var pointer;
@@ -82,5 +82,14 @@ HookMessage = function(isa, sel, imp, old) {
 
     MSHookMessageEx(isa, sel, type(function(self, sel) { return imp.apply(self, slice.call(arguments, 2)); }), pointer);
 };
+
+for(var k in ms) {
+    if(ms.hasOwnProperty(k)) {
+        var f = utils[k];
+        if(typeof f === 'function') {
+            Cycript.all[k] = f;
+        }
+    }
+}
 
 })(exports);
