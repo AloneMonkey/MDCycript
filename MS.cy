@@ -85,7 +85,7 @@ ms.HookMessage = function(isa, sel, imp, old) {
 
 for(var k in ms) {
     if(ms.hasOwnProperty(k)) {
-        var f = utils[k];
+        var f = ms[k];
         if(typeof f === 'function') {
             Cycript.all[k] = f;
         }
