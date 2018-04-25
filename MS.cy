@@ -37,13 +37,11 @@ let GetLibraryPath = function() {
 
 var libcycript = dlopen(GetLibraryPath() + "/libcycript.dylib", RTLD_NOLOAD);
 if (libcycript == null) {
-    exports.error = dlerror();
     return;
 }
 
 var libsubstrate = dlopen(GetLibraryPath() + "/libsubstrate.dylib", RTLD_GLOBAL | RTLD_LAZY);
 if (libsubstrate == null) {
-    exports.error = dlerror();
     return;
 }
 
@@ -54,10 +52,10 @@ extern "C" void MSHookMessageEx(Class, SEL, void *, void **);
 
 var slice = Array.prototype.slice;
 
-exports.getImageByName = MSGetImageByName;
-exports.findSymbol = MSFindSymbol;
+getImageByName = MSGetImageByName;
+findSymbol = MSFindSymbol;
 
-exports.hookFunction = function(func, hook, old) {
+HookFunction = function(func, hook, old) {
     var type = typeid(func);
 
     var pointer;
@@ -71,7 +69,7 @@ exports.hookFunction = function(func, hook, old) {
     MSHookFunction(func.valueOf(), type(hook), pointer);
 };
 
-exports.hookMessage = function(isa, sel, imp, old) {
+HookMessage = function(isa, sel, imp, old) {
     var type = sel.type(isa);
 
     var pointer;
